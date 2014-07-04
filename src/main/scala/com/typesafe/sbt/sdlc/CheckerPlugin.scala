@@ -12,16 +12,21 @@ object Plugin extends sbt.Plugin {
   val sdlcSettings = Seq(
     sdlcDocDir := (target in (Compile, doc)).value,
     sdlc := {
+      var ok = true
       val checker = new Checker {
         val scaladocDir = sdlcDocDir.value.getPath
         val scanDir = sdlcCheckDir.value.getPath
         val linkBase = sdlcBase.value
         override def debug(msg: String) = streams.value.log.debug(msg)
         override def info(msg: String) = streams.value.log.info(msg)
-        override def error(msg: String) = streams.value.log.error(msg)
+        override def error(msg: String) = {
+          ok = false
+          streams.value.log.error(msg)
+        }
       }
       checker.buildModel()
       checker.scanPages()
+      if(!ok) sys.error("There were errors during scaladoc link checking")
     }
   )
 }
