@@ -3,7 +3,7 @@ Scaladoc link checker plugin for sbt
 
 Add to `project/build.sbt`:
 
-    addSbtPlugin("com.typesafe.sbt" % "sbt-sdlc" % "0.1-SNAPSHOT")
+    addSbtPlugin("com.typesafe" % "sbt-sdlc" % "0.1")
 
 Add something like this to your project settings:
 
