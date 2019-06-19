@@ -10,24 +10,37 @@ trait Checker {
   def scanDir: String
   def linkBase: String
 
-  def debug(msg: String): Unit = println(msg)
-  def info(msg: String): Unit = println(msg)
-  def error(msg: String): Unit = println(msg)
+  def debug(msg: => String): Unit = println(msg)
+  def info(msg: => String): Unit = println(msg)
+  def error(msg: => String): Unit = println(msg)
 
   var pageMap = Map.empty[String, Page]
+  var is212: Boolean = true
 
   def buildModel() {
     debug(s"Building scaladoc index from $scaladocDir ...")
-    val scaladocPages: Vector[Page] = new File(scaladocDir).listFiles.toVector.flatMap { f =>
+    val scaladocPages: Vector[Page] = Option(new File(scaladocDir).listFiles).getOrElse(Array.empty).toVector.flatMap { f =>
       if(f.getName == "index" || f.getName == "lib" || f.getName == "index.html") Vector.empty
       else scanScaladoc("", f)
     }
     pageMap = scaladocPages.map(p => (p.path, p)).toMap
-    debug("Found "+scaladocPages.length+" pages with "+scaladocPages.map(_.ids.size).sum+" fragments")
+    debug("Found "+scaladocPages.length+" pages with "+scaladocPages.map(_.ids.size).sum+" fragments:")
+    pageMap.foreach { case (s, p) =>
+      debug(s"- $s")
+      debug(s"  (ids: ${p.ids.toSeq.sorted.mkString(", ")})")
+      debug(s"  (simplified ids: ${p.simplifiedIds.map(_._2).toSeq.sorted.mkString(", ")})")
+    }
+  }
+
+  def detect212(): Unit = {
+    val marker211 = new File(new File(new File(scaladocDir), "lib"), "permalink.png")
+    is212 = !marker211.exists()
+    if(is212) debug(s"Marker file $marker211 for 2.11- not found, assuming 2.12+")
+    else debug(s"Marker file $marker211 for 2.11- found, assuming 2.11-")
   }
 
   def scanPages() {
-    debug(s"Scanning HTML pages in $scanDir against $linkBase ...")
+    info(s"Scanning HTML pages in $scanDir against $linkBase ...")
     val errors = scanLinks(new File(scanDir))
     errors.groupBy(_.source.getPath).toVector.sortBy(_._1).foreach { case (f, es) =>
       error(s"$f:")
@@ -59,19 +72,26 @@ trait Checker {
   def scanLinks(f: File): Vector[DocError] = {
     if(f.isDirectory) f.listFiles.toVector.flatMap(scanLinks)
     else if(f.getName.endsWith(".html")) {
+      debug(s"Scanning $f ...")
       val doc = Jsoup.parse(f, "UTF-8")
-      val refs = doc.getElementsByAttribute("href").asScala.map(_.attr("href")).filter(_.startsWith(linkBase)).map(_.substring(linkBase.length))
+      val allLinks = doc.getElementsByAttribute("href").asScala.map(_.attr("href"))
+      val refs = allLinks.filter(_.startsWith(linkBase)).map(_.substring(linkBase.length))
+      debug(s"- found ${refs.size} scaladoc links, ${allLinks.size-refs.size} other links")
       refs.toVector.flatMap { uri =>
-        if(uri.startsWith("#")) checkLink(f, uri.substring(1)).toVector
-        else if(uri.startsWith("index.html#")) checkLink(f, uri.substring(11)).toVector
-        else if(uri.nonEmpty && uri != "index.html") Vector(MainFileError(f, uri))
-        else Vector.empty
+        if(is212) checkLink212(f, uri).toVector
+        else {
+          if(uri.startsWith("#")) checkLink211(f, uri.substring(1)).toVector
+          else if(uri.startsWith("index.html#")) checkLink211(f, uri.substring(11)).toVector
+          else if(uri.nonEmpty && uri != "index.html") Vector(MainFileError(f, uri))
+          else Vector.empty
+        }
       }
     }
     else Vector.empty
   }
 
-  def checkLink(source: File, link: String): Option[DocError] = {
+  def checkLink211(source: File, link: String): Option[DocError] = {
+    debug(s"  Checking link: $link")
     var page = link.split("@")(0).replace(".", "/")
     if(page.indexOf(".html") < 0) page += ".html"
     pageMap.get(page) match {
@@ -81,6 +101,26 @@ trait Checker {
           if(p.ids.contains(fragment)) None
           else Some(FragmentError(source, link, page, fragment))
         } else None
+      case None => Some(PageError(source, link, page))
+    }
+  }
+
+  def checkLink212(source: File, link: String): Option[DocError] = {
+    debug(s"  Checking link: $link")
+    def withIndex(s: String) =
+      if((s == "") || s.endsWith("/")) s + "index.html" else s
+    val sep = link.indexOf('#')
+    val (page, anchor) =
+      if(sep == -1) (withIndex(link), None)
+      else (withIndex(link.substring(0, sep)), Some(link.substring(sep+1)))
+    pageMap.get(page) match {
+      case Some(p) =>
+        anchor match {
+          case Some(fragment) =>
+            if(p.ids.contains(fragment)) None
+            else Some(FragmentError(source, link, page, fragment))
+          case None => None
+        }
       case None => Some(PageError(source, link, page))
     }
   }
