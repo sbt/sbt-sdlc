@@ -5,15 +5,15 @@ sdlc checks links in HTML files against a scaladoc site. Unlike a regular link c
 fragment syntax. sdlc only needs HTML files as input and validates all links with a specified prefix, so it should
 work with any documentation tool that can output HTML (like Ornate or Paradox). 
 
-Add to `project/plugins.sbt` (requires sbt 1.x):
+Add to `project/plugins.sbt`:
 
-```
-addSbtPlugin("com.typesafe" % "sbt-sdlc" % "0.2")
+```scala
+addSbtPlugin("com.github.sbt" % "sbt-sdlc" % "0.3.0")
 ```
 
 Add add something like this to `build.sbt`:
 
-```
+```scala
 lazy val root = project.in(file("."))
   .enablePlugins(SDLCPlugin)
 
@@ -26,7 +26,7 @@ Type `sdlc` to run in sbt.
 
 The following setting keys are available:
 
-```
+```scala
     val sdlcDocDir = settingKey[File]("The directory containing scaladoc output")
     val sdlcBase = settingKey[String]("The base URI of the scaladoc output")
     val sdlcCheckDir = settingKey[File]("The directory containing HTML files to check")
