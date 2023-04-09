@@ -1,4 +1,4 @@
-package com.typesafe.sbt.sdlc
+package sbtsdlc
 
 import java.io.File
 import org.jsoup.Jsoup

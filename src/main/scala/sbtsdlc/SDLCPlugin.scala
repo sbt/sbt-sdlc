@@ -1,4 +1,4 @@
-package com.typesafe.sbt.sdlc
+package sbtsdlc
 
 import sbt._
 import Keys._
