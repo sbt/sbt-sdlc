@@ -23,7 +23,7 @@ object SDLCPlugin extends AutoPlugin {
 
       val checker = new Checker {
         def nonnull[T <: AnyRef](x: T, s: String): T =
-          if(x eq null) throw new MessageOnlyException(s"SettingKey '$s' not set")
+          if (x eq null) throw new MessageOnlyException(s"SettingKey '$s' not set")
           else x
         val scaladocDir = nonnull(sdlcDocDir.value, "sdlcDocDir").getPath
         val scanDir = nonnull(sdlcCheckDir.value, "sdlcCheckDir").getPath
@@ -36,20 +36,20 @@ object SDLCPlugin extends AutoPlugin {
         }
       }
 
-      if(!new File(checker.scaladocDir).exists())
-        throw new MessageOnlyException("sdlcDocDir '"+checker.scaladocDir+"' does not exist")
+      if (!new File(checker.scaladocDir).exists())
+        throw new MessageOnlyException("sdlcDocDir '" + checker.scaladocDir + "' does not exist")
 
       sdlcVersion.value match {
         case "2.11" => checker.is212 = false
         case "2.12" => checker.is212 = true
         case "auto" => checker.detect212()
-        case s => throw new MessageOnlyException(s"Illegal value '$s' for sdlcVersion")
+        case s      => throw new MessageOnlyException(s"Illegal value '$s' for sdlcVersion")
       }
 
       checker.buildModel()
       checker.scanPages()
 
-      if(!ok) throw new MessageOnlyException("There were errors during scaladoc link checking")
+      if (!ok) throw new MessageOnlyException("There were errors during scaladoc link checking")
       else checker.info(s"Scaladoc link checking successful.")
     }
   )
