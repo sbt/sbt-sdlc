@@ -1,12 +1,12 @@
+lazy val jsoup = "org.jsoup" % "jsoup" % "1.7.3"
+lazy val repoSlug = "sbt/sbt-sdlc"
+
 lazy val plugin = project.in(file("."))
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-sdlc",
-    organization := "com.typesafe",
-    version := "0.2-SNAPSHOT",
     crossScalaVersions := Seq("2.12.17", "2.10.7"),
-    libraryDependencies += "org.jsoup" % "jsoup" % "1.7.3",
-    licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
+    libraryDependencies += jsoup,
     scriptedLaunchOpts ++= Seq("-Xmx1024M", "-Dplugin.version=" + version.value),
     scriptedBufferLog := false,
     pluginCrossBuild / sbtVersion := {
@@ -16,3 +16,30 @@ lazy val plugin = project.in(file("."))
       }
     },
   )
+
+ThisBuild / organization := "com.github.sbt"
+ThisBuild / dynverSonatypeSnapshots := true
+ThisBuild / version := {
+  val orig = (ThisBuild / version).value
+  if (orig.endsWith("-SNAPSHOT")) "0.2-SNAPSHOT"
+  else orig
+}
+ThisBuild / licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html"))
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url(s"https://github.com/$repoSlug"),
+    s"scm:git@github.com:sbt/$repoSlug.git"
+  )
+)
+ThisBuild / developers := List(
+  Developer(
+    id = "szeiger",
+    name = "Stefan Zeiger",
+    email = "@szeiger",
+    url = url("http://szeiger.de/")
+  )
+)
+ThisBuild / description := "An sbt plugin to check Scaladoc links"
+ThisBuild / homepage := Some(url(s"https://github.com/$repoSlug"))
+ThisBuild / pomIncludeRepository := { _ => false }
+ThisBuild / publishMavenStyle := true
