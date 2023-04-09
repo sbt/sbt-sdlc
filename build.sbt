@@ -1,7 +1,8 @@
 lazy val jsoup = "org.jsoup" % "jsoup" % "1.7.3"
 lazy val repoSlug = "sbt/sbt-sdlc"
 
-lazy val plugin = project.in(file("."))
+lazy val plugin = project
+  .in(file("."))
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-sdlc",
@@ -14,7 +15,7 @@ lazy val plugin = project.in(file("."))
         case "2.10" => "0.13.18"
         case "2.12" => "1.2.8" // set minimum sbt version
       }
-    },
+    }
   )
 
 ThisBuild / organization := "com.github.sbt"
@@ -41,5 +42,3 @@ ThisBuild / developers := List(
 )
 ThisBuild / description := "An sbt plugin to check Scaladoc links"
 ThisBuild / homepage := Some(url(s"https://github.com/$repoSlug"))
-ThisBuild / pomIncludeRepository := { _ => false }
-ThisBuild / publishMavenStyle := true

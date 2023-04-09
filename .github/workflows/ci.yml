@@ -21,6 +21,10 @@ jobs:
             java: 8
             distribution: temurin
             jobtype: 2
+          - os: ubuntu-latest
+            java: 8
+            distribution: temurin
+            jobtype: 3
     runs-on: ${{ matrix.os }}
     env:
       # define Java options for both official sbt and sbt-extras
@@ -42,3 +46,7 @@ jobs:
         if: ${{ matrix.jobtype == 2 }}
         shell: bash
         run: sbt -v clean ++2.10.* scripted
+      - name: Scalafmt
+        if: ${{ matrix.jobtype == 3 }}
+        shell: bash
+        run: sbt -v clean scalafmtSbtCheck scalafmtCheckAll
