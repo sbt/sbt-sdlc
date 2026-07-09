@@ -20,10 +20,6 @@ jobs:
           - os: ubuntu-latest
             java: 8
             distribution: temurin
-            jobtype: 2
-          - os: ubuntu-latest
-            java: 8
-            distribution: temurin
             jobtype: 3
     runs-on: ${{ matrix.os }}
     env:
@@ -42,10 +38,6 @@ jobs:
         if: ${{ matrix.jobtype == 1 }}
         shell: bash
         run: sbt -v clean ++2.12.* scripted
-      - name: Build and test (Scala 2.10.*)
-        if: ${{ matrix.jobtype == 2 }}
-        shell: bash
-        run: sbt -v clean ++2.10.* scripted
       - name: Scalafmt
         if: ${{ matrix.jobtype == 3 }}
         shell: bash
