@@ -1,7 +1,7 @@
 lazy val jsoup = "org.jsoup" % "jsoup" % "1.7.3"
 lazy val repoSlug = "sbt/sbt-sdlc"
 
-def scala212 = "2.12.17"
+def scala212 = "2.12.21"
 ThisBuild / scalaVersion := scala212
 
 lazy val plugin = project
@@ -16,7 +16,7 @@ lazy val plugin = project
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.10" => "0.13.18"
-        case "2.12" => "1.2.8" // set minimum sbt version
+        case "2.12" => "1.13.0" // set minimum sbt version
       }
     }
   )

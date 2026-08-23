@@ -6,6 +6,6 @@ sdlcCheckDir := file("src/html-" + scalaBinaryVersion.value)
 
 //logLevel in sdlc := Level.Debug
 
-crossScalaVersions := Seq("2.11.12", "2.12.8")
+crossScalaVersions := Seq("2.11.12", "2.12.21")
 
 scalaVersion := crossScalaVersions.value.head
