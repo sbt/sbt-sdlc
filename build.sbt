@@ -9,14 +9,13 @@ lazy val plugin = project
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-sdlc",
-    crossScalaVersions := Seq(scala212, "2.10.7"),
+    crossScalaVersions := Seq(scala212),
     libraryDependencies += jsoup,
     scriptedLaunchOpts ++= Seq("-Xmx1024M", "-Dplugin.version=" + version.value),
     scriptedBufferLog := false,
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
-        case "2.10" => "0.13.18"
-        case "2.12" => "1.13.0" // set minimum sbt version
+        case "2.12" => "1.9.0" // set minimum sbt version
       }
     }
   )
