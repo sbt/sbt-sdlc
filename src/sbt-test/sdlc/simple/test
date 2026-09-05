@@ -1,7 +1,7 @@
 > doc
 $ exists target/scala-2.11/api/index.html
 > sdlc
-> ++2.12.8
+> ++2.12.21
 > doc
 $ exists target/scala-2.12/api/index.html
 > sdlc

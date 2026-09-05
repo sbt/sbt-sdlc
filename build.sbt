@@ -1,7 +1,7 @@
 lazy val jsoup = "org.jsoup" % "jsoup" % "1.7.3"
 lazy val repoSlug = "sbt/sbt-sdlc"
 
-def scala212 = "2.12.17"
+def scala212 = "2.12.21"
 ThisBuild / scalaVersion := scala212
 
 lazy val plugin = project
@@ -9,14 +9,13 @@ lazy val plugin = project
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-sdlc",
-    crossScalaVersions := Seq(scala212, "2.10.7"),
+    crossScalaVersions := Seq(scala212),
     libraryDependencies += jsoup,
     scriptedLaunchOpts ++= Seq("-Xmx1024M", "-Dplugin.version=" + version.value),
     scriptedBufferLog := false,
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
-        case "2.10" => "0.13.18"
-        case "2.12" => "1.2.8" // set minimum sbt version
+        case "2.12" => "1.9.0" // set minimum sbt version
       }
     }
   )
@@ -67,7 +66,7 @@ ThisBuild / githubWorkflowPublish := Seq(
 ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest", "windows-latest")
 ThisBuild / githubWorkflowPublishJavaVersion := JavaSpec.zulu("8")
 ThisBuild / githubWorkflowJavaVersions := Seq(
-  // JavaSpec.temurin("17"),
+  JavaSpec.temurin("17"),
   JavaSpec.zulu("8"), // only for sbt 1.x
 )
 ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "zulu@8", "os" -> "macos-latest"))
