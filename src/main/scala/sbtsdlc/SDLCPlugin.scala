@@ -1,7 +1,7 @@
 package sbtsdlc
 
-import sbt._
-import Keys._
+import sbt.*
+import Keys.*
 
 object SDLCPlugin extends AutoPlugin {
   object autoImport {
@@ -9,6 +9,7 @@ object SDLCPlugin extends AutoPlugin {
     val sdlcBase = settingKey[String]("The base URI of the scaladoc output")
     val sdlcCheckDir = settingKey[File]("The directory containing HTML files to check")
     val sdlcVersion = settingKey[String]("The scaladoc format version (2.11/2.12/auto)")
+    @transient
     val sdlc = taskKey[Unit]("Check scaladoc links in HTML files")
   }
   import autoImport._
@@ -16,7 +17,7 @@ object SDLCPlugin extends AutoPlugin {
   //override def trigger = allRequirements
 
   override lazy val projectSettings = Seq(
-    sdlcDocDir := (target in (Compile, doc)).value,
+    sdlcDocDir := (Compile / doc / target).value,
     sdlcVersion := "auto",
     sdlc := {
       var ok = true

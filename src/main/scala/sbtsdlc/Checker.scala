@@ -2,7 +2,7 @@ package sbtsdlc
 
 import java.io.File
 import org.jsoup.Jsoup
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.*
 
 trait Checker {
 
@@ -17,9 +17,9 @@ trait Checker {
   var pageMap = Map.empty[String, Page]
   var is212: Boolean = true
 
-  def buildModel() {
+  def buildModel(): Unit = {
     debug(s"Building scaladoc index from $scaladocDir ...")
-    val scaladocPages: Vector[Page] = Option(new File(scaladocDir).listFiles).getOrElse(Array.empty).toVector.flatMap {
+    val scaladocPages: Vector[Page] = Option(new File(scaladocDir).listFiles).getOrElse(Array.empty[File]).toVector.flatMap {
       f =>
         if (f.getName == "index" || f.getName == "lib" || f.getName == "index.html") Vector.empty
         else scanScaladoc("", f)
@@ -41,7 +41,7 @@ trait Checker {
     else debug(s"Marker file $marker211 for 2.11- found, assuming 2.11-")
   }
 
-  def scanPages() {
+  def scanPages(): Unit = {
     info(s"Scanning HTML pages in $scanDir against $linkBase ...")
     val errors = scanLinks(new File(scanDir))
     errors.groupBy(_.source.getPath).toVector.sortBy(_._1).foreach {
