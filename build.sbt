@@ -66,7 +66,7 @@ ThisBuild / githubWorkflowPublish := Seq(
 ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest", "windows-latest")
 ThisBuild / githubWorkflowPublishJavaVersion := JavaSpec.zulu("8")
 ThisBuild / githubWorkflowJavaVersions := Seq(
-  // JavaSpec.temurin("17"),
+  JavaSpec.temurin("17"),
   JavaSpec.zulu("8"), // only for sbt 1.x
 )
 ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "zulu@8", "os" -> "macos-latest"))
