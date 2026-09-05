@@ -1,9 +1,5 @@
 package sbtsdlc
 
-import java.io.File
-import org.jsoup.Jsoup
-import scala.collection.JavaConverters._
-
 object Main extends App with Checker {
 
   val scaladocDir = args(0)

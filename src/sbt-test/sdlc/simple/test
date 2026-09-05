@@ -1,9 +1,9 @@
 > doc
-$ exists target/scala-2.11/api/index.html
+$ exists target/**/api/index.html
 > sdlc
 > ++2.12.21
 > doc
-$ exists target/scala-2.12/api/index.html
+$ exists target/**/api/index.html
 > sdlc
 > set sdlcCheckDir := file("src/html-fail-2.12/1.html")
 -> sdlc
