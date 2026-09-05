@@ -72,7 +72,7 @@ ThisBuild / githubWorkflowBuild := Seq(
     List("+test", "+scripted")
   ),
 )
-ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowTargetTags ++= Seq("v**")
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     commands = List("ci-release"),
