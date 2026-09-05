@@ -20,7 +20,7 @@ lazy val plugin = project
             "-release:8",
             "-feature",
             "-deprecation",
-            "-Xlint",
+            "-Xlint"
           )
         case "3" =>
           Nil
@@ -39,7 +39,7 @@ lazy val plugin = project
         case "2.12" => "1.13.0"
         case _      => (pluginCrossBuild / sbtVersion).value
       }
-    },
+    }
   )
 
 ThisBuild / organization := "com.github.sbt"
@@ -70,9 +70,13 @@ ThisBuild / homepage := Some(url(s"https://github.com/$repoSlug"))
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
     List("+test", "+scripted")
-  ),
+  )
 )
 ThisBuild / githubWorkflowTargetTags ++= Seq("v**")
+ThisBuild / githubWorkflowPublishTargetBranches :=
+  Seq(
+    RefPredicate.StartsWith(Ref.Tag("v"))
+  )
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     commands = List("ci-release"),
